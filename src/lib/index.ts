@@ -16,6 +16,7 @@ export { default as PositionalAudioHelper } from './helpers/PositionalAudioHelpe
 // control component
 export { default as OrbitControls } from './controls/OrbitControls.svelte'
 export { default as TransformControls } from './controls/TransformControls.svelte'
+export { default as PointerLockControls } from './controls/PointerLockControls.svelte';
 
 // effect components
 export { default as Pass } from './effects/Pass.svelte'
@@ -94,6 +95,7 @@ export type {
   OrthographicCameraProperties,
   PerspectiveCameraProperties,
   OrbitControlsProperties,
+  PointerLockControls
   PassProperties,
   AmbientLightProperties,
   DirectionalLightProperties,
