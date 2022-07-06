@@ -6,23 +6,9 @@
     import { getParent } from '../internal/HierarchicalObject.svelte';
     import { getThrelteUserData } from '../lib/getThrelteUserData';
     export let isLocked = undefined;
-    export let enableZoom = undefined;
-    export let keyPanSpeed = undefined;
-    export let keys = undefined;
-    export let maxAzimuthAngle = undefined;
-    export let maxDistance = undefined;
-    export let maxPolarAngle = undefined;
-    export let maxZoom = undefined;
-    export let minAzimuthAngle = undefined;
-    export let minDistance = undefined;
-    export let minPolarAngle = undefined;
-    export let minZoom = undefined;
-    export let mouseButtons = undefined;
-    export let panSpeed = undefined;
-    export let rotateSpeed = undefined;
-    export let screenSpacePanning = undefined;
-    export let touches = undefined;
-    export let zoomSpeed = undefined;
+    export let keyPanSpeed = 1; // 0.0 - 1.0, mapping to 0-500
+    export let yHeight = 1; // min y height
+    
     const parent = getParent();
     const { renderer, scene, camera, invalidate } = useThrelte();
     if (!renderer)
@@ -57,40 +43,8 @@
     $: {
         if (isLocked !== undefined)
             controls.isLocked = isLocked;
-        if (enableZoom !== undefined)
-            controls.enableZoom = enableZoom;
         if (keyPanSpeed !== undefined)
             controls.keyPanSpeed = keyPanSpeed;
-        if (keys !== undefined)
-            controls.keys = keys;
-        if (maxAzimuthAngle !== undefined)
-            controls.maxAzimuthAngle = maxAzimuthAngle;
-        if (maxDistance !== undefined)
-            controls.maxDistance = maxDistance;
-        if (maxPolarAngle !== undefined)
-            controls.maxPolarAngle = maxPolarAngle;
-        if (maxZoom !== undefined)
-            controls.maxZoom = maxZoom;
-        if (minAzimuthAngle !== undefined)
-            controls.minAzimuthAngle = minAzimuthAngle;
-        if (minDistance !== undefined)
-            controls.minDistance = minDistance;
-        if (minPolarAngle !== undefined)
-            controls.minPolarAngle = minPolarAngle;
-        if (minZoom !== undefined)
-            controls.minZoom = minZoom;
-        if (mouseButtons !== undefined)
-            controls.mouseButtons = mouseButtons;
-        if (panSpeed !== undefined)
-            controls.panSpeed = panSpeed;
-        if (rotateSpeed !== undefined)
-            controls.rotateSpeed = rotateSpeed;
-        if (screenSpacePanning !== undefined)
-            controls.screenSpacePanning = screenSpacePanning;
-        if (touches !== undefined)
-            controls.touches = touches;
-        if (zoomSpeed !== undefined)
-            controls.zoomSpeed = zoomSpeed;
 
         invalidate('PointerLockControls: props changed');
     }
@@ -170,10 +124,10 @@
                 direction.normalize(); // this ensures consistent movements in all directions
             
                 if ( moveForward || moveBackward ) {
-                velocity.z -= direction.z * 600.0 * delta;
+                velocity.z -= direction.z * (500.0 * keyPanSpeed) * delta;
                 }
                 if ( moveLeft || moveRight ) {
-                velocity.x -= direction.x * 600.0 * delta;
+                velocity.x -= direction.x * (500.0 * keyPanSpeed) * delta;
                 }    
         
                 controls.moveRight( - velocity.x * delta );
@@ -181,9 +135,9 @@
 
                 controls.getObject().position.y += ( velocity.y * delta ); // new behavior
 
-                if ( controls.getObject().position.y < 150 ) {
+                if ( controls.getObject().position.y < yHeight ) {
                 velocity.y = 0;
-                controls.getObject().position.y = 150;
+                controls.getObject().position.y = yHeight;
                 }
             }
             prevTime = time;
@@ -213,4 +167,3 @@
         invalidate('PointerLockControls: onDestroy');
     });
     </script>
-    
